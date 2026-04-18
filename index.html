@@ -1,77 +1,124 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Lucky 3 Cards</title>
-  <style>
-    body {
-      text-align: center;
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-    }
-    button {
-      padding: 12px 20px;
-      font-size: 18px;
-      background: #22c55e;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-    }
-    .card {
-      display: inline-block;
-      width: 60px;
-      height: 90px;
-      line-height: 90px;
-      margin: 10px;
-      background: white;
-      color: black;
-      border-radius: 10px;
-      font-size: 24px;
-      font-weight: bold;
-      animation: flip 0.5s ease;
-    }
-    @keyframes flip {
-      from { transform: rotateY(90deg); }
-      to { transform: rotateY(0); }
-    }
-  </style>
-</head>
+<style>
+  body { background:#0f172a; color:#fff; font-family:Arial; text-align:center; }
 
-<body>
+  button {
+    padding:12px 18px; border-radius:10px; border:0;
+    background:#22c55e; color:#fff; font-size:16px; margin:20px;
+  }
+
+  /* ---- Fan deck ---- */
+  .deck {
+    position: relative;
+    width: 260px;
+    height: 140px;
+    margin: 0 auto;
+  }
+
+  .fan-card {
+    position: absolute;
+    width: 60px; height: 90px;
+    background: #fff;
+    border-radius: 8px;
+    transform-origin: bottom center;
+    box-shadow: 0 4px 10px rgba(0,0,0,.4);
+  }
+
+  /* create half-circle fan */
+  .fan-card:nth-child(1){ transform: rotate(-40deg) translateY(-10px); }
+  .fan-card:nth-child(2){ transform: rotate(-25deg) translateY(-5px); }
+  .fan-card:nth-child(3){ transform: rotate(-10deg); }
+  .fan-card:nth-child(4){ transform: rotate(5deg); }
+  .fan-card:nth-child(5){ transform: rotate(20deg); }
+  .fan-card:nth-child(6){ transform: rotate(35deg); }
+
+  /* ---- Drawn cards ---- */
+  .table { margin-top: 40px; }
+
+  .card {
+    display:inline-flex;
+    width:70px; height:100px;
+    align-items:center; justify-content:center;
+    background:#fff; color:#111;
+    border-radius:10px; margin:10px;
+    font-weight:bold; font-size:18px;
+    transform: translateY(80px);
+    opacity:0;
+    transition: all .4s ease;
+  }
+
+  .show {
+    transform: translateY(0);
+    opacity:1;
+  }
+</style>
 
 <h1>🎴 Lucky 3 Cards</h1>
 
-<button onclick="draw()">Draw Cards</button>
+<!-- Fan deck -->
+<div class="deck" id="deck">
+  <div class="fan-card"></div>
+  <div class="fan-card"></div>
+  <div class="fan-card"></div>
+  <div class="fan-card"></div>
+  <div class="fan-card"></div>
+  <div class="fan-card"></div>
+</div>
 
-<div id="cards"></div>
+<button onclick="draw()">Draw from Deck</button>
+
+<div class="table" id="cards"></div>
 <h2 id="result"></h2>
 
-<p style="margin-top:30px; font-size:12px;">
-This is a fun-based game. No real money involved.
-</p>
-
 <script>
-function draw() {
-  let deck = [1,2,3,4,5,6,7,8,9,10];
-  deck.sort(() => Math.random() - 0.5);
+// full deck
+const suits = ["♠","♥","♦","♣"];
+const ranks = [
+  {r:"A", v:1},{r:"2",v:2},{r:"3",v:3},{r:"4",v:4},{r:"5",v:5},
+  {r:"6",v:6},{r:"7",v:7},{r:"8",v:8},{r:"9",v:9},{r:"10",v:10},
+  {r:"J",v:10},{r:"Q",v:10},{r:"K",v:10}
+];
 
-  let c1 = deck[0];
-  let c2 = deck[1];
-  let c3 = deck[2];
+function createDeck(){
+  let d=[];
+  suits.forEach(s=>{
+    ranks.forEach(x=>{
+      d.push({label:x.r+s, value:x.v});
+    });
+  });
+  return d;
+}
 
-  document.getElementById("cards").innerHTML =
-    `<div class="card">${c1}</div>
-     <div class="card">${c2}</div>
-     <div class="card">${c3}</div>`;
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
 
-  let sum = c1 + c2 + c3;
+function draw(){
+  let deck = shuffle(createDeck());
+  let picked = deck.slice(0,3);
+
+  let wrap = document.getElementById("cards");
+  wrap.innerHTML="";
+
+  picked.forEach((c,i)=>{
+    let el = document.createElement("div");
+    el.className="card";
+    el.innerText=c.label;
+    wrap.appendChild(el);
+
+    setTimeout(()=>{
+      el.classList.add("show");
+    }, i*200);
+  });
+
+  let sum = picked.reduce((a,c)=>a+c.value,0);
   let result = sum % 10;
 
-  document.getElementById("result").innerText =
-    "Result: " + result;
+  setTimeout(()=>{
+    document.getElementById("result").innerText="Result: "+result;
+  },700);
 }
 </script>
-
-</body>
-</html>

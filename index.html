@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lucky 3 Cards</title>
+</head>
+<body style="text-align:center; font-family:sans-serif; background:#111; color:#fff;">
+
+<h1>🎴 Lucky 3 Cards</h1>
+
+<button onclick="draw()">Draw Cards</button>
+
+<h2 id="cards"></h2>
+<h2 id="result"></h2>
+
+<p style="margin-top:30px; font-size:12px;">
+This is a fun-based game. No real money involved.
+</p>
+
+<script>
+function draw() {
+  let deck = [1,2,3,4,5,6,7,8,9,10];
+  deck.sort(() => Math.random() - 0.5);
+
+  let c1 = deck[0];
+  let c2 = deck[1];
+  let c3 = deck[2];
+
+  let sum = c1 + c2 + c3;
+  let result = sum % 10;
+
+  document.getElementById("cards").innerText =
+    "Cards

@@ -2,14 +2,49 @@
 <html>
 <head>
   <title>Lucky 3 Cards</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 18px;
+      background: #22c55e;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+    .card {
+      display: inline-block;
+      width: 60px;
+      height: 90px;
+      line-height: 90px;
+      margin: 10px;
+      background: white;
+      color: black;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      animation: flip 0.5s ease;
+    }
+    @keyframes flip {
+      from { transform: rotateY(90deg); }
+      to { transform: rotateY(0); }
+    }
+  </style>
 </head>
-<body style="text-align:center; font-family:sans-serif; background:#111; color:#fff;">
+
+<body>
 
 <h1>🎴 Lucky 3 Cards</h1>
 
 <button onclick="draw()">Draw Cards</button>
 
-<h2 id="cards"></h2>
+<div id="cards"></div>
 <h2 id="result"></h2>
 
 <p style="margin-top:30px; font-size:12px;">
@@ -25,8 +60,18 @@ function draw() {
   let c2 = deck[1];
   let c3 = deck[2];
 
+  document.getElementById("cards").innerHTML =
+    `<div class="card">${c1}</div>
+     <div class="card">${c2}</div>
+     <div class="card">${c3}</div>`;
+
   let sum = c1 + c2 + c3;
   let result = sum % 10;
 
-  document.getElementById("cards").innerText =
-    "Cards
+  document.getElementById("result").innerText =
+    "Result: " + result;
+}
+</script>
+
+</body>
+</html>
